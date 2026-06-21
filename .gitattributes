@@ -1,0 +1,47 @@
+# Auto-detect text files and normalize line endings to LF
+* text=auto eol=lf
+
+# Python
+*.py text diff=python
+*.pyi text diff=python
+
+# JavaScript / TypeScript
+*.js text
+*.jsx text
+*.ts text
+*.tsx text
+*.json text
+*.css text
+*.html text
+
+# Configs
+*.yml text
+*.yaml text
+*.toml text
+*.ini text
+*.cfg text
+*.env.example text
+
+# Docs
+*.md text diff=markdown
+*.txt text
+
+# Docker
+Dockerfile text
+*.dockerignore text
+
+# Binary files — never diff or merge
+*.pdf binary
+*.docx binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.woff binary
+*.woff2 binary
+*.ttf binary
+*.eot binary
+
+# Lock files — do not diff
+package-lock.json -diff

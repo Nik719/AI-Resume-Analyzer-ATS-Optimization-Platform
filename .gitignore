@@ -1,0 +1,68 @@
+# ─── Environment ──────────────────────────────────────────────────────────────
+.env
+.env.local
+.env.*.local
+
+# ─── Google Cloud credentials (NEVER commit this) ─────────────────────────────
+gcs-credentials.json
+*-credentials.json
+*-service-account.json
+
+# ─── Python / Django ──────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+venv/
+.venv/
+env/
+.Python
+
+# Django
+backend/staticfiles/
+backend/media/
+*.log
+db.sqlite3
+/tmp/resume_analyzer_test.db
+/tmp/resume_test_media/
+
+# ─── Node / Next.js ──────────────────────────────────────────────────────────
+node_modules/
+.next/
+out/
+.npm
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ─── Docker ───────────────────────────────────────────────────────────────────
+# Keep docker-compose.yml — ignore local overrides
+docker-compose.override.yml
+
+# ─── IDEs & OS ────────────────────────────────────────────────────────────────
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# ─── Pytest / Coverage ────────────────────────────────────────────────────────
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+
+# ─── Type checking ────────────────────────────────────────────────────────────
+.mypy_cache/
+.dmypy.json
