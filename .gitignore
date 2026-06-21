@@ -66,3 +66,4 @@ htmlcov/
 # ─── Type checking ────────────────────────────────────────────────────────────
 .mypy_cache/
 .dmypy.json
+.vercel

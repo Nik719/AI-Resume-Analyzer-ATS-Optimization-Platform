@@ -1,0 +1,10 @@
+{
+  "regions": ["bom1"],
+  "experimentalServices": {
+    "frontend": {
+      "root": "frontend",
+      "routePrefix": "/",
+      "framework": "nextjs"
+    }
+  }
+}
