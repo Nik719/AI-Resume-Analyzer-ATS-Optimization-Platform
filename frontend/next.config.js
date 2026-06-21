@@ -8,10 +8,11 @@ const nextConfig = {
     ],
   },
   async rewrites() {
+    const backendOrigin = process.env.BACKEND_INTERNAL_URL || "http://backend:8000";
     return [
       {
         source: "/api/:path*",
-        destination: `${process.env.NEXT_PUBLIC_API_URL || "http://backend:8000/api"}/:path*`,
+        destination: `${backendOrigin}/api/:path*`,
       },
     ];
   },
