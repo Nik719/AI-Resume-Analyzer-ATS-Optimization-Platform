@@ -14,10 +14,17 @@ const nextConfig = {
   },
   async rewrites() {
     const backendOrigin = process.env.BACKEND_INTERNAL_URL || "http://backend:8000";
+    // Next.js :path* wildcard strips trailing slashes — the captured segment for
+    // /api/v1/health/ becomes v1/health. We add / back so Django doesn't
+    // APPEND_SLASH-redirect every request (which would create an infinite loop).
     return [
       {
+        source: "/api/:path*/",
+        destination: `${backendOrigin}/api/:path*/`,
+      },
+      {
         source: "/api/:path*",
-        destination: `${backendOrigin}/api/:path*`,
+        destination: `${backendOrigin}/api/:path*/`,
       },
     ];
   },
