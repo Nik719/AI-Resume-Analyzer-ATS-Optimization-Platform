@@ -3,7 +3,12 @@ from .base import *  # noqa
 DEBUG = False
 
 # Security
-SECURE_SSL_REDIRECT = True
+# Railway terminates HTTPS at the edge; the container always receives plain HTTP.
+# SECURE_SSL_REDIRECT would redirect Railway's own health-checker (HTTP) to HTTPS
+# and cause it to fail. Set SECURE_PROXY_SSL_HEADER so Django respects the
+# X-Forwarded-Proto header that Railway's proxy sets on real user requests.
+SECURE_SSL_REDIRECT = False
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 SECURE_BROWSER_XSS_FILTER = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
 X_FRAME_OPTIONS = "DENY"
