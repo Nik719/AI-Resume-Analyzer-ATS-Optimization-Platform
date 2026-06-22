@@ -1,8 +1,10 @@
 "use client";
 import { useEffect, useState } from "react";
+import dynamic from "next/dynamic";
 import Link from "next/link";
 import { TrendingUp, FileText, Briefcase, BarChart2, ArrowRight, Clock, CheckCircle, AlertCircle, Loader2 } from "lucide-react";
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
+
+const ScoreTrendChart = dynamic(() => import("./ScoreTrendChart"), { ssr: false, loading: () => <div className="h-[220px] skeleton" /> });
 import api from "@/lib/api";
 import { DashboardStats, AnalysisResult } from "@/types";
 import { cn, scoreColor, scoreBg, scoreLabel, hireProbabilityColor } from "@/lib/utils";
@@ -81,16 +83,7 @@ export default function DashboardPage() {
         <div className="card lg:col-span-2">
           <h3 className="mb-4">Score Trend</h3>
           {trendData.length > 0 ? (
-            <ResponsiveContainer width="100%" height={220}>
-              <LineChart data={trendData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-                <XAxis dataKey="date" tick={{ fontSize: 11, fill: "#9ca3af" }} axisLine={false} tickLine={false} />
-                <YAxis domain={[0, 100]} tick={{ fontSize: 11, fill: "#9ca3af" }} axisLine={false} tickLine={false} />
-                <Tooltip contentStyle={{ borderRadius: "8px", border: "1px solid #e5e7eb", fontSize: "12px" }} />
-                <Line type="monotone" dataKey="ATS" stroke="#6366f1" strokeWidth={2} dot={{ r: 3 }} />
-                <Line type="monotone" dataKey="Match" stroke="#10b981" strokeWidth={2} dot={{ r: 3 }} />
-              </LineChart>
-            </ResponsiveContainer>
+            <ScoreTrendChart data={trendData} />
           ) : (
             <div className="flex h-48 items-center justify-center rounded-lg border-2 border-dashed border-gray-100">
               <div className="text-center">
