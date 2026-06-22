@@ -1,5 +1,7 @@
 from pathlib import Path
 import environ
+import json
+import os
 from datetime import timedelta
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
@@ -77,17 +79,24 @@ TEMPLATES = [
 ]
 
 # ── Database ─────────────────────────────────────────────────────────────────
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": env("POSTGRES_DB", default="resume_analyzer"),
-        "USER": env("POSTGRES_USER", default="postgres"),
-        "PASSWORD": env("POSTGRES_PASSWORD", default="postgres"),
-        "HOST": env("POSTGRES_HOST", default="db"),
-        "PORT": env("POSTGRES_PORT", default="5432"),
-        "CONN_MAX_AGE": 60,
+# Railway (and other PaaS) provide DATABASE_URL; fall back to individual vars.
+import dj_database_url as _dj_db
+
+_db_url = env("DATABASE_URL", default="")
+if _db_url:
+    DATABASES = {"default": _dj_db.parse(_db_url, conn_max_age=60)}
+else:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.postgresql",
+            "NAME": env("POSTGRES_DB", default="resume_analyzer"),
+            "USER": env("POSTGRES_USER", default="postgres"),
+            "PASSWORD": env("POSTGRES_PASSWORD", default="postgres"),
+            "HOST": env("POSTGRES_HOST", default="db"),
+            "PORT": env("POSTGRES_PORT", default="5432"),
+            "CONN_MAX_AGE": 60,
+        }
     }
-}
 
 # ── Auth ─────────────────────────────────────────────────────────────────────
 AUTH_USER_MODEL = "accounts.User"
@@ -170,14 +179,23 @@ if GCS_BUCKET_NAME:
     DEFAULT_FILE_STORAGE   = "storages.backends.gcloud.GoogleCloudStorage"
     GS_BUCKET_NAME         = GCS_BUCKET_NAME
     GS_PROJECT_ID          = GCS_PROJECT_ID
-    GS_LOCATION            = "media"              # uploads go under media/ prefix
-    GS_FILE_OVERWRITE      = False                # keep every version
-    GS_DEFAULT_ACL         = None                 # bucket-level IAM (private)
-    GS_QUERYSTRING_AUTH    = True                 # time-limited signed URLs
-    GS_EXPIRATION          = timedelta(hours=1)   # signed URL TTL
-    GS_BLOB_CHUNK_SIZE     = 5 * 1024 * 1024      # 5 MB resumable-upload chunks
+    GS_LOCATION            = "media"
+    GS_FILE_OVERWRITE      = False
+    GS_DEFAULT_ACL         = None
+    GS_QUERYSTRING_AUTH    = True
+    GS_EXPIRATION          = timedelta(hours=1)
+    GS_BLOB_CHUNK_SIZE     = 5 * 1024 * 1024
     GS_OBJECT_PARAMETERS   = {"cache_control": "private, max-age=3600"}
     MEDIA_URL = f"https://storage.googleapis.com/{GCS_BUCKET_NAME}/media/"
+
+    # Railway / PaaS: supply credentials as a JSON string in GCS_CREDENTIALS_JSON.
+    # Docker / bare-metal: GOOGLE_APPLICATION_CREDENTIALS file path is used instead.
+    _gcs_creds_json = env("GCS_CREDENTIALS_JSON", default="")
+    if _gcs_creds_json:
+        from google.oauth2 import service_account as _sa
+        GS_CREDENTIALS = _sa.Credentials.from_service_account_info(
+            json.loads(_gcs_creds_json)
+        )
 else:
     # Fallback: local filesystem (Docker volume or bare-metal dev)
     DEFAULT_FILE_STORAGE = "django.core.files.storage.FileSystemStorage"
