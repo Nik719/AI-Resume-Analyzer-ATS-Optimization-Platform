@@ -159,6 +159,7 @@ CELERY_RESULT_SERIALIZER = "json"
 CELERY_TIMEZONE = "UTC"
 CELERY_TASK_TRACK_STARTED = True
 CELERY_TASK_TIME_LIMIT = 300  # 5 minutes
+CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
 
 # ── Static files ─────────────────────────────────────────────────────────────
 STATIC_URL = "/static/"
